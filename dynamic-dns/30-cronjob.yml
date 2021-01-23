@@ -1,0 +1,19 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cloudflare-ddns
+  namespace: dynamic-dns
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: dns-update
+            image: hugomd/cloudflare-ddns:2.0.0
+            envFrom:
+            - secretRef: 
+                name: cloudflare-config

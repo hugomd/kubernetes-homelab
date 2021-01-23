@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authelia
+  namespace: authelia
+  labels:
+    app: authelia
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authelia
+  template:
+    metadata:
+      labels:
+        app: authelia
+    spec:
+      containers:
+      - name: authelia
+        image: authelia/authelia:4.21.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9091
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /secrets
+        - name: config-volume
+          mountPath: /config
+          readOnly: true
+        - name: user-volume
+          mountPath: /etc/authelia
+          readOnly: true
+        - name: dbvolume
+          mountPath: /var/lib/authelia       
+        env:
+        - name: AUTHELIA_JWT_SECRET_FILE
+          value: '/secrets/jwt_secret'
+      volumes:
+      - name: dbvolume
+        hostPath:
+          path: /nfs/kubernetes/authelia
+      - name: secret-volume
+        secret:
+          secretName: authelia-secrets
+      - name: user-volume
+        secret:
+          secretName: users
+          items:
+            - key: users.yaml
+              path: users.yaml
+      - name: config-volume
+        configMap:
+          name: authelia-config
+          items:
+            - key: configuration.yml
+              path: configuration.yml

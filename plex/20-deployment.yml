@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex
+  namespace: plex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plex
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      volumes:
+      - name: pms
+        hostPath:
+          path: /nfs/kubernetes/plex
+      - name: plex
+        hostPath:
+          path: /plex
+      - name: data
+        hostPath:
+          path: /nfs/kubernetes/plex/data
+      containers:
+      - name: plex
+        image: plexinc/pms-docker:1.19.5.3112-b23ab3896
+        volumeMounts:
+        - name: plex
+          subPath: config
+          mountPath: /config
+        - name: plex
+          subPath: transcode
+          mountPath: /transcode
+        - name: data
+          subPath: movies
+          mountPath: /data/movies
+        - name: data
+          subPath: anime
+          mountPath: /data/anime
+        - name: data
+          subPath: tv
+          mountPath: /data/tv
+        - name: data
+          subPath: shorts
+          mountPath: /data/shorts
+        env:
+        - name: CHANGE_CONFIG_DIR_OWNERSHIP
+          value: 'false'
+        - name: PLEX_UID
+          value: '0'
+        - name: PLEX_GID
+          value: '0'
+        - name: TZ
+          value: 'Australia/Melbourne'
+        ports:
+        - name: pms
+          containerPort: 32400
+        - name: webtools
+          containerPort: 33400
+        readinessProbe:
+          tcpSocket:
+            port: pms
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: pms
+          initialDelaySeconds: 15
+          periodSeconds: 20

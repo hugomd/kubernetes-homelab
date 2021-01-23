@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: speedtest
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: speedtest
+  template:
+    metadata:
+      labels:
+        app: speedtest
+    spec:
+      containers:
+      - name: speedtest-config
+        image: barrycarey/speedtest-for-influxdb-and-grafana 
+        env:
+        - name: influxspeedtest
+          value: '/config/config.ini'
+        volumeMounts:
+        - name: speedtest-config
+          mountPath: /config
+          readOnly: true
+      volumes:
+      - name: speedtest-config
+        secret:
+          secretName: speedtest-config
+          items:
+            - key: config.ini
+              path: config.ini

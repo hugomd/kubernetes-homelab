@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: monitoring
+  name: telegraf
+spec:
+  selector:
+    matchLabels:
+      app: telegraf
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: telegraf
+    spec:
+      containers:
+      - image: telegraf:1.10.0
+        name: telegraf
+        envFrom:
+        - secretRef:
+            name: telegraf-secrets
+        volumeMounts:
+        - name: telegraf-config-volume
+          mountPath: /etc/telegraf/telegraf.conf
+          subPath: telegraf.conf
+          readOnly: true
+      volumes:
+      - name: telegraf-config-volume
+        configMap:
+          name: telegraf-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: telegraf
+  namespace: monitoring
+spec:
+  selector:
+    app: telegraf
+  type: NodePort
+  ports:
+  - port: 8125
+    protocol: TCP
+    targetPort: 8125

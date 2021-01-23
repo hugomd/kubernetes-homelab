@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx
+  namespace: nginx-example
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-signin: https://authelia.sost.ovh/
+    nginx.ingress.kubernetes.io/auth-url: http://authelia-service.authelia.svc.cluster.local/api/verify
+spec:
+  rules:
+  - host: nginx.sost.ovh
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx
+          servicePort: 80
+  tls:
+    - secretName: nginx-tls-prod-cert
+      hosts:
+        - nginx.sost.ovh
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-secure
+  namespace: nginx-example
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-signin: https://authelia.sost.ovh/
+    nginx.ingress.kubernetes.io/auth-url: http://authelia-service.authelia.svc.cluster.local/api/verify
+spec:
+  rules:
+  - host: nginx-secure.sost.ovh
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx
+          servicePort: 80
+  tls:
+    - secretName: nginx-secure-tls-prod-cert
+      hosts:
+        - nginx-secure.sost.ovh

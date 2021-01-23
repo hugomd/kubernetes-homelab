@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami
+  namespace: whoami
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoami
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: containous/whoami
+        imagePullPolicy: Always
+        name: whoami
+        ports:
+        - containerPort: 80
+          protocol: TCP

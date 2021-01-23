@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: monitoring
+  labels:
+    app: unifi-poller
+  name: unifi-poller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unifi-poller
+  template:
+    metadata:
+      labels:
+        app: unifi-poller
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: golift/unifi-poller:latest
+        name: unifi-poller
+        env:
+        - name: UP_UNIFI_DEFAULT_URL
+          value: "https://192.168.1.1"
+        - name: UP_UNIFI_DEFAULT_USER
+          valueFrom:
+            secretKeyRef:
+              name: udm-creds
+              key: UP_UNIFI_DEFAULT_USER
+        - name: UP_UNIFI_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: udm-creds
+              key: UP_UNIFI_DEFAULT_PASS
+        - name: UP_INFLUXDB_URL
+          value: "http://influxdb:8086"
