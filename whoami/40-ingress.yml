@@ -8,7 +8,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
-  - host: whoami.sost.ovh
+  - host: who.sost.ovh
     http:
       paths:
       - path: /
@@ -16,9 +16,9 @@ spec:
           serviceName: whoami
           servicePort: 80
   tls:
-    - secretName: whoami-tls-prod-cert
+    - secretName: who-tls-prod-cert
       hosts:
-        - whoami.sost.ovh
+        - who.sost.ovh
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -30,7 +30,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
-  - host: whoami.internal.sost.ovh
+  - host: who.internal.sost.ovh
     http:
       paths:
       - path: /
@@ -38,6 +38,6 @@ spec:
           serviceName: whoami
           servicePort: 80
   tls:
-    - secretName: whoami-internal-tls-prod-cert
+    - secretName: who-internal-tls-prod-cert
       hosts:
-        - whoami.internal.sost.ovh
+        - who.internal.sost.ovh
