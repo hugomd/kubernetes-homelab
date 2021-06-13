@@ -36,6 +36,7 @@ metadata:
   name: ingress-nginx-controller
   namespace: ingress-nginx
 data:
+  ssl-redirect: "false"
 ---
 # Source: ingress-nginx/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
