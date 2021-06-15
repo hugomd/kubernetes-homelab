@@ -5,7 +5,6 @@ metadata:
   namespace: plex
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
   - host: plex.sost.ovh
@@ -15,7 +14,3 @@ spec:
         backend:
           serviceName: plex
           servicePort: 32400
-  tls:
-    - secretName: plex-tls-prod-cert
-      hosts:
-        - plex.sost.ovh
