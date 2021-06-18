@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  namespace: qbittorrent
+spec:
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      securityContext:
+        sysctls:
+          - name: net.ipv4.conf.all.src_valid_mark
+            value: "1"
+          - name: net.ipv6.conf.all.disable_ipv6
+            value: "0"
+      volumes:
+      - name: media
+        hostPath:
+          path: /nfs/kubernetes/qbittorrent
+      - name: config
+        secret:
+          secretName: wireguard-conf
+          items:
+          - key: wg0.conf
+            path: wg0.conf
+      - name: qbittorrent-config
+        configMap: 
+          name: qbittorrent-config
+          items:
+          - key: qBittorrent.conf
+            path: qBittorrent.conf
+      containers:
+      - image: hotio/qbittorrent
+        imagePullPolicy: IfNotPresent
+        name: qbittorrent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: VPN_ENABLED
+          value: "true"
+        volumeMounts:
+        - name: config
+          mountPath: /config/wireguard/wg0.conf
+          subPath: wg0.conf
+        - name: media
+          mountPath: /downloads
+          subPath: downloads
+        - name: media
+          mountPath: /app/qBittorrent/config
+          subPath: config
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
