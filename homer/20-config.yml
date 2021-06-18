@@ -102,6 +102,12 @@ data:
             icon: "fas fa-play-circle"
             tag: "media"
             url: "https://plex.sost.ovh"
+          - name: "Qbittorrent"
+            # logo: "assets/tools/sample.png"
+            # Alternatively a fa icon can be provided:
+            icon: "fas fa-download"
+            tag: "media"
+            url: "https://qbittorrent.sost.ovh"
       - name: "Utility"
         icon: "fas fa-heartbeat"
         items:
