@@ -45,6 +45,9 @@ spec:
         - name: data
           subPath: shorts
           mountPath: /data/shorts
+        - name: data
+          subPath: audiobooks
+          mountPath: /data/audiobooks
         env:
         - name: CHANGE_CONFIG_DIR_OWNERSHIP
           value: 'false'
