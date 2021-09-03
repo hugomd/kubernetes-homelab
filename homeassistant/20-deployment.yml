@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hass
+  namespace: homeassistant
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: hass
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: hass
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: Australia/Melbourne
+        image: ghcr.io/home-assistant/home-assistant:stable
+        imagePullPolicy: IfNotPresent
+        name: hass
+        ports:
+        - containerPort: 8123
+          hostPort: 8123
+          protocol: TCP
+        - containerPort: 51827
+          hostPort: 51827
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /config
+          name: data
+          subPath: config
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /nfs/hass
+          type: ""
+        name: data
+  replicas: 1
