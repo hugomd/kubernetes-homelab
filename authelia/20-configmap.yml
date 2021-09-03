@@ -107,7 +107,7 @@ data:
 
         - domain: "*.sost.ovh"
           subject: "group:admins"
-          policy: two_factor
+          policy: one_factor
 
     # Configuration of session cookies
     #
