@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hass
+  namespace: homeassistant
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: hass.sost.ovh
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: hass
+          servicePort: 8123

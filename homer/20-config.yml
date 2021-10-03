@@ -16,7 +16,7 @@ data:
     title: "Homelab Dashboard"
     # subtitle: "Homer"
     # documentTitle: "Welcome" # Customize the browser tab text
-    logo: "assets/logo.png"
+    # logo: "assets/logo.png"
     # Alternatively a fa icon can be provided:
     # icon: "fas fa-skull-crossbones"
 
@@ -114,6 +114,9 @@ data:
           - name: "Authelia"
             url: "https://authelia.sost.ovh"
             icon: "fas fa-lock"
+          - name: "Home Assistant"
+            url: "https://hass.sost.ovh"
+            icon: "fas fa-home"
       - name: "Networking"
         icon: "fas fa-server"
         items:
