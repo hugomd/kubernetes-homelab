@@ -25,7 +25,10 @@ spec:
           path: /nfs/kubernetes/plex/data
       containers:
       - name: plex
-        image: plexinc/pms-docker:1.19.5.3112-b23ab3896
+        image: plexinc/pms-docker:1.26.0.5715-8cf78dab3
+        resources:                                                             
+          limits:                                                             
+            gpu.intel.com/i915: "1"
         volumeMounts:
         - name: plex
           subPath: config
