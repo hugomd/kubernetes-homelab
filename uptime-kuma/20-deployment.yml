@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uptime-kuma
+  namespace: uptime-kuma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uptime-kuma
+  template:
+    metadata:
+      labels:
+        app: uptime-kuma
+    spec:
+      volumes:
+      - name: data
+        hostPath:
+          path: /nfs/kubernetes/uptime_kuma
+      containers:
+      - name: plex
+        image: louislam/uptime-kuma:1.16.0-beta.0
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+        ports:
+        - name: web
+          containerPort: 3001
