@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rflood
+  namespace: rflood
+spec:
+  selector:
+    matchLabels:
+      app: rflood
+  template:
+    metadata:
+      labels:
+        app: rflood
+    spec:
+      securityContext:
+        sysctls:
+          - name: net.ipv4.conf.all.src_valid_mark
+            value: "1"
+          - name: net.ipv6.conf.all.disable_ipv6
+            value: "0"
+      volumes:
+      - name: data
+        hostPath:
+          path: /nfs/kubernetes/rflood
+      - name: config
+        secret:
+          secretName: wireguard-conf
+          items:
+          - key: wg0.conf
+            path: wg0.conf
+      containers:
+      - image: ghcr.io/hotio/rflood:release-0.9.8-r16--4.7.0
+        imagePullPolicy: IfNotPresent
+        name: rflood
+        ports:
+        - name: web
+          containerPort: 3000
+        env:
+        - name: VPN_ENABLED
+          value: "true"
+        - name: VPN_CONF
+          value: "wg0"
+        - name: VPN_IP_CHECK_DELAY
+          value: "5"
+        - name: PRIVOXY_ENABLED
+          value: "false"
+        - name: FLOOD_AUTH
+          value: "false"
+        - name: PUID
+          value: '1000'
+        - name: PGID
+          value: '1004'
+        volumeMounts:
+        - name: config
+          mountPath: /config/wireguard/wg0.conf
+          subPath: wg0.conf
+        - name: data
+          mountPath: /downloads
+          subPath: downloads
+        - name: data
+          mountPath: /config
+          subPath: config
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN

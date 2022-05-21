@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: rflood
+  namespace: rflood
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: rflood.sost.ovh
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: rflood
+          servicePort: 3000
