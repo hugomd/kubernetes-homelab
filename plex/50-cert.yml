@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: plex-tls-prod-cert
+  namespace: plex
+spec:
+  secretName: plex-tls-prod-cert
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  dnsNames:
+  - plex.sost.ovh
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
